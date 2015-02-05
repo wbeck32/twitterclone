@@ -21,33 +21,24 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next){
-    // res.cookie('user_name',req.body.user_name ); 
-    // res.cookie('password',req.body.password);
-
+    
     //bookshelf command to check database for username
     
     var usernameValid = function () {
     
         new Users({user_name: req.body.user_name})
-            .fetch()
+            .fetch({require: true})
             .then(function(model){
-                if(model.attributes.password === req.body.password) {;
+                if(model.attributes.password === req.body.password) {
                     res.cookie('user_name',req.body.user_name); 
                     res.cookie('password',req.body.password);
-                    res.render('userpage');              
-            })
+                    res.render('userpage'); 
+                }             
+            });
     }
         
-    var passwordValid = function () {
-        Users.query('where', 'user_name', '=', req.body.user_name).fetch().then(function(model){
-            return true;
-        });
-    }
     usernameValid();
-    if(usernameValid == true && passwordValid == true) { 
-        res.render('index', { title: 'Express' });
-   
-    } else {console.log("didn't work")}
+ 
     //bookshelf command to check database for password
     //if match, render homepage
     //if not, throw error
