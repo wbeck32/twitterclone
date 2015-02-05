@@ -1,0 +1,12 @@
+.wrapper
+    form(name= 'LOG IN TO TWITER OR SUFFER THE CONSEQUENCES', action='/login', method='post')
+        .line
+            label(for= 'user_name') Enter your user name:
+            input(type= 'text' name= 'user_name')
+        .line
+            label(for= 'password') Enter your password: 
+            input(type= 'text' name= 'password')
+        .line
+            input(type= 'submit', value='submit')
+  p Don't have an account? 
+  a(href='https://localhost:4000') CLICK HERE OR SUFFER THE CONSEQUENCES 
