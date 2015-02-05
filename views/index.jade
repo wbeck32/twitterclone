@@ -1,5 +1,10 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+.wrapper
+    form(name= 'JOIN TWITER OR SUFFER THE CONSEQUENCES', action='/', method='post')
+        .line
+            label(for= 'user_name') Choose a user name:
+            input(type= 'text' name= 'user_name')
+        .line
+            label(for= 'password') Enter a password: 
+            input(type= 'text' name= 'password')
+        .line
+            input(type= 'submit', value='submit')
