@@ -3,22 +3,26 @@ var Promise = require('bluebird');
 var express = require('express');
 var router = express.Router();
 var cookie = require('cookie-parser');
-
+//knex setup
 var env = process.env.NODE_ENV || 'development';
 var knexConfig = require('../knexfile.js')[env];
 var knex = require('knex')(knexConfig);
 var bookshelf = require('bookshelf')(knex);
-
- var Users = bookshelf.Model.extend ({
-        tableName: 'users'
-    });
+//DB table definitions
+var Users = bookshelf.Model.extend ({
+    tableName: 'users'
+});
+var Twits = bookshelf.Model.extend({
+    tableName: 'twits'
+})
+var Connections = bookshelf.Model.extend({
+    tableName: 'connections'
+})
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-console.log(req.cookies.user_name);
-    //check cookie and act accordingly
+      //check cookie and act accordingly
     if(req.cookies.user_name) {
         new Users({user_name: req.cookies.user_name})
         .fetch()
@@ -90,7 +94,30 @@ router.post('/signup',function(req,res,next){
 });
 
 router.get('/userpage',function(req,res,next){
-    res.render('userpage');
+    new Users({user_name: req.cookies.user_name})
+        .fetch()
+        .then(function(model){
+           var userId = model.attributes.id;
+           new Twits({user_id: userId})
+           .fetch()
+           .then(function(twitContent){
+                var twits = twitContent;
+                new Connections({user_id_overlord: userId})
+                .fetch()
+                .then(function(followers){
+                    var minions = followers;
+                    new Connections({user_id_minion: userId})
+                    .fetch()
+                    .then(function(following){
+                        var overlords = following;
+                        console.log(twits, minions, overlords);
+                        res.render('userpage', {twits: twits, minions: minions, overlords: overlords});
+                    })
+                })
+           })  
+
+        })
+    
 });
 
 module.exports = router;
