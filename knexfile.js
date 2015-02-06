@@ -6,10 +6,10 @@ module.exports = {
      client: 'postgres',
      debug: true,
      connection: {
-       host: process.env.APP_DB_HOST || 'ec2-23-21-235-249.compute-1.amazonaws.com',
-       user: process.env.APP_DB_USER || 'cgwxbpmxocodpp',
-       password: process.env.APP_DB_PASSWORD || 'YQzoulId6qhy8NlRWaU5UoFOjd',
-       database: process.env.APP_DB_NAME || 'd22j5k0tlt7cob',
+       host: process.env.APP_DB_HOST || 'ec2-54-163-254-93.compute-1.amazonaws.com',
+       user: process.env.APP_DB_USER || 'ldqeltazrierdk',
+       password: process.env.APP_DB_PASSWORD || 'p9JpAAkaVOIgZfipLQngSO0OlT',
+       database: process.env.APP_DB_NAME || 'd98hq4v524b470',
        ssl: true
      },
  }

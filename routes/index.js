@@ -17,17 +17,17 @@ var bookshelf = require('bookshelf')(knex);
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-console.log(cookie.value);
+console.log(req.cookies.user_name);
     //check cookie and act accordingly
-    if(cookie.domain === 'localhost' ) {
-        new Users({user_name:cookie.value})
+    if(req.cookies.user_name) {
+        new Users({user_name: req.cookies.user_name})
         .fetch()
         .then(function(model){
             if(model !== null) {
-                res.render('userpage'); 
+                res.redirect('/userpage'); 
    
             } else {
-                res.render('login');
+                res.redirect('/login');
             }
 
         });
@@ -35,10 +35,15 @@ console.log(cookie.value);
         //use cookie.value go to db grab their
         //minions, followers,feed, etc
         //get minion obj, overlord obj, twits obj
-        res.render('userpage', {user_name: model.attributes.user_name});
     } else {
       res.render('login', { title: 'Express' });
     }
+});
+
+router.get('/signup', function(req, res, next) {
+
+    res.render('signup')
+
 });
 
 router.post('/login', function(req, res, next){
@@ -52,7 +57,7 @@ router.post('/login', function(req, res, next){
             .then(function(model){
             if(model !== null) {
                 if(model.attributes.password === req.body.password) {
-                    res.cookie('user_name',req.body.user_name); 
+                    res.cookie('user_name',req.body.user_name);  
                     res.cookie('password',req.body.password);
                     res.render('userpage'); 
                 } else {
@@ -74,7 +79,7 @@ router.post('/login', function(req, res, next){
 
 router.post('/signup',function(req,res,next){
 
-    res.cookie('user_name',req.body.user_name ); 
+    res.cookie('user_name',req.body.user_name); 
     res.cookie('password',req.body.password);
 
     Users.forge({ user_name: req.body.user_name, password:req.body.password }).save().then(function(user) {
