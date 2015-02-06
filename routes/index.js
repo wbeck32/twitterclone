@@ -98,20 +98,23 @@ router.get('/userpage',function(req,res,next){
         .fetch()
         .then(function(model){
            var userId = model.attributes.id;
-           new Twits({user_id: userId})
-           .fetch()
+           new Twits()
+           .query('where', 'user_id', '=', userId)
+           .fetchAll({withRelated:['users']})
            .then(function(twitContent){
                 var twits = twitContent;
-                new Connections({user_id_overlord: userId})
-                .fetch()
+                new Connections()
+                .query('where', 'user_id_overlord', '=', userId)
+                .fetchAll()
                 .then(function(followers){
                     var minions = followers;
                     new Connections({user_id_minion: userId})
-                    .fetch()
+                    .query('where', 'user_id_minion', '=', userId)
+                    .fetchAll()
                     .then(function(following){
                         var overlords = following;
-                        console.log(twits, minions, overlords);
-                        res.render('userpage', {twits: twits, minions: minions, overlords: overlords});
+                        console.log(twits.models[0].attributes);
+                        res.render('userpage', {twits: twits.models, minions: minions.models, overlords: overlords});
                     })
                 })
            })  
