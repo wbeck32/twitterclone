@@ -16,8 +16,29 @@ var bookshelf = require('bookshelf')(knex);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
+console.log(cookie.value);
     //check cookie and act accordingly
-  res.render('login', { title: 'Express' });
+    if(cookie.domain === 'localhost' ) {
+        new Users({user_name:cookie.value})
+        .fetch()
+        .then(function(model){
+            if(model !== null) {
+                res.render('userpage'); 
+   
+            } else {
+                res.render('login');
+            }
+
+        });
+
+        //use cookie.value go to db grab their
+        //minions, followers,feed, etc
+        //get minion obj, overlord obj, twits obj
+        res.render('userpage', {user_name: model.attributes.user_name});
+    } else {
+      res.render('login', { title: 'Express' });
+    }
 });
 
 router.post('/login', function(req, res, next){
