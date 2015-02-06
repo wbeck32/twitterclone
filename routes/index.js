@@ -94,30 +94,33 @@ router.post('/signup',function(req,res,next){
 });
 
 router.get('/userpage',function(req,res,next){
-    new Users({user_name: req.cookies.user_name})
-        .fetch()
-        .then(function(model){
-           var userId = model.attributes.id;
-           new Twits({user_id: userId})
-           .fetch()
-           .then(function(twitContent){
-                var twits = twitContent;
-                new Connections({user_id_overlord: userId})
-                .fetch()
-                .then(function(followers){
-                    var minions = followers;
-                    new Connections({user_id_minion: userId})
-                    .fetch()
-                    .then(function(following){
-                        var overlords = following;
-                        console.log(twits, minions, overlords);
-                        res.render('userpage', {twits: twits, minions: minions, overlords: overlords});
-                    })
-                })
-           })  
+   new Users({user_name: req.cookies.user_name})
+       .fetch()
+       .then(function(model){
+          var userId = model.attributes.id;
+          new Twits()
+          .query('where', 'user_id', '=', userId)
+          .fetchAll()
+          .then(function(twitContent){
+               var twits = twitContent;
+               new Connections()
+               .query('where', 'user_id_overlord', '=', userId)
+               .fetchAll()
+               .then(function(followers){
+                   var minions = followers;
+                   new Connections({user_id_minion: userId})
+                   .query('where', 'user_id_minion', '=', userId)
+                   .fetchAll()
+                   .then(function(following){
+                       var overlords = following;
+                       console.log(twits);
+                       res.render('userpage', {twits: twits.models, minions: minions.models, overlords: overlords.models});
+                   })
+               })
+          })  
 
-        })
-    
+       })
+   
 });
 
 module.exports = router;
