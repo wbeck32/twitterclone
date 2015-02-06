@@ -16,7 +16,9 @@ var bookshelf = require('bookshelf')(knex);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    //check cookie and act accordingly
+   if(cookie) {
+    render('userpage')
+   } //check cookie and act accordingly
   res.render('login', { title: 'Express' });
 });
 
