@@ -27,14 +27,21 @@ router.post('/login', function(req, res, next){
     var usernameValid = function () {
     
         new Users({user_name: req.body.user_name})
-            .fetch({require: true})
+            .fetch()
             .then(function(model){
+            if(model !== null) {
                 if(model.attributes.password === req.body.password) {
                     res.cookie('user_name',req.body.user_name); 
                     res.cookie('password',req.body.password);
                     res.render('userpage'); 
-                }             
-            });
+                } else {
+                    console.log('your password does not match').done();
+
+                } 
+            } else {
+                console.log('this user does not exist');
+            }               
+        });
     }
         
     usernameValid();
@@ -42,9 +49,9 @@ router.post('/login', function(req, res, next){
     //bookshelf command to check database for password
     //if match, render homepage
     //if not, throw error
-})
+});
 
-router.post('/',function(req,res,next){
+router.post('/signup',function(req,res,next){
 
     res.cookie('user_name',req.body.user_name ); 
     res.cookie('password',req.body.password);
@@ -52,6 +59,12 @@ router.post('/',function(req,res,next){
     Users.forge({ user_name: req.body.user_name, password:req.body.password }).save().then(function(user) {
         console.log('user added %j',user);
     });
+
+    res.render('userpage');
+});
+
+router.get('/userpage',function(req,res,next){
+    res.render('userpage');
 });
 
 module.exports = router;
