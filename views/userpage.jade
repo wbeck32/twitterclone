@@ -3,6 +3,14 @@
     .activity
         .people
             .minions
+            ul
+                each mKey in minions
+                    li= mKey.attributes.user_id_minion
             .overlords
-        .feed   
-      
+            ul
+                each oKey in overlords
+                    li= oKey.attributes.user_id_overlord
+        .feed
+            ul
+                each tKey in twits
+                    li= tKey.attributes.user_id+" - "+tKey.attributes.text+" - "+tKey.attributes.timestamp

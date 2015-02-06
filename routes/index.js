@@ -120,7 +120,6 @@ router.get('/userpage',function(req,res,next){
            })  
 
         })
-    
 });
 
 module.exports = router;
