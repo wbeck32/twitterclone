@@ -118,7 +118,7 @@ router.get('/userpage',function(req,res,next){
                     .fetchAll()
                     .then(function(following){
                         var overlords = following;
-                        res.render('userpage', {username: req.body.user_name, twits: twits.models, minions: minions.models, overlords: overlords.models});
+                        res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions.models, overlords: overlords.models});
                     })
                 })
            })  

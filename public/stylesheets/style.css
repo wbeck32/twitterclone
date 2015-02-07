@@ -7,22 +7,48 @@ a {
   color: #00B7FF;
 }
 
-.wrapper {
+li {
+    list-style-type: none;
+}
 
+.wrapper {
+    width:100%;
+    border: 2px solid red;
+    float:left;
 }
 
 .entertwit {
-
+    width:50%;
+    border: 1px solid green;
 }
 
 .activity {
+    width:100%;
+    border:1px solid blue;
 
 }
 
 .people {
+    width:25%;
+    border:1px solid black;
+    float:left;
+}
+
+.minions,.overlords {
+    width:100%;
+    border:1px solid orange;
+    margin: 10px;
 
 }
 
-.feed {
+.overlords {
+/*    width:20%;
+    border:1px solid yellow;
 
+*/}
+
+.feed {
+    width: 70%;
+    border:1px solid purple;
+    float:right;
 }
