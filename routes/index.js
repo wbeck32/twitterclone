@@ -79,7 +79,11 @@ router.post('/login', function(req, res, next){
             }               
         });
     }
-        
+    var userId = 1;
+
+   
+   
+    minionFinder();
     usernameValid();
  
     //bookshelf command to check database for password
@@ -100,6 +104,33 @@ router.post('/signup',function(req,res,next){
 });
 
 router.get('/userpage',function(req,res,next){
+
+function overlordFinder(callback) {
+    knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_overlord')  
+    .then(function(table){
+        var overlords = [];
+        for (var i = 0; i < table.length; i++) {
+            if(table[i].user_id_minion === userId){
+                overlords.push(table[i].user_name);
+            }
+        }
+        callback;
+    }) 
+}
+function minionFinder(callback) {
+    knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_minion')  
+    .then(function(table){
+        var minions = [];
+        for (var i = 0; i < table.length; i++) {
+            if(table[i].user_id_overlord === userId){
+                minions.push(table[i].user_name);
+            }
+        }
+        callback;
+    }) 
+} 
+
+
     new Users({user_name: req.cookies.user_name})
         .fetch()
         .then(function(model){
@@ -110,26 +141,12 @@ router.get('/userpage',function(req,res,next){
            .then(function(twitContent){
                 // twitContent.models[0].relations.userNames.attributes.user_name
                 var twits = twitContent;
-                new Connections()
-                .query('where', 'user_id_overlord', '=', userId)
-                .fetchAll({withRelated: ['userNames']})
-                .then(function(followers){
-                    var minions = followers;
-                    new Connections({user_id_minion: userId})
-                    .query('where', 'user_id_minion', '=', userId)
-                    .fetchAll({withRelated: ['userNames']})
-                    .then(function(following){
-                        console.log(following.models[0].relations);
-                        // for (var i = 0; i < following.models.length; i++) {
-                        //     console.log(following.models[i].relations['UserNames'].attributes.user_name)
-                        // };
-                        
-                        var overlords = following;
-                        res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions.models, overlords: overlords.models});
-                    })
-                })
+                overlordFinder(
+                    minionfinder(
+                        res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions, overlords: overlords})
+                    )
+                )     
            })  
-
         })
 });
 
