@@ -13,7 +13,10 @@ var Users = bookshelf.Model.extend ({
     tableName: 'users'
 });
 var Twits = bookshelf.Model.extend({
-    tableName: 'twits'
+    tableName: 'twits',
+    userNames: function() {
+        return this.belongsTo(Users);
+    }
 })
 var Connections = bookshelf.Model.extend({
     tableName: 'connections'
@@ -63,7 +66,7 @@ router.post('/login', function(req, res, next){
                 if(model.attributes.password === req.body.password) {
                     res.cookie('user_name',req.body.user_name);  
                     res.cookie('password',req.body.password);
-                    res.render('userpage'); 
+                    res.redirect('/userpage'); 
                 } else {
                     console.log('your password does not match').done();
 
@@ -100,8 +103,10 @@ router.get('/userpage',function(req,res,next){
            var userId = model.attributes.id;
            new Twits()
            .query('where', 'user_id', '=', userId)
-           .fetchAll()
+           .fetchAll({withRelated: ['userNames']})
            .then(function(twitContent){
+                console.log(twitContent.models[0])
+                // twitContent.models[0].relations.userNames.attributes.user_name
                 var twits = twitContent;
                 new Connections()
                 .query('where', 'user_id_overlord', '=', userId)
