@@ -100,7 +100,7 @@ router.get('/userpage',function(req,res,next){
            var userId = model.attributes.id;
            new Twits()
            .query('where', 'user_id', '=', userId)
-           .fetchAll({withRelated:['users']})
+           .fetchAll()
            .then(function(twitContent){
                 var twits = twitContent;
                 new Connections()
@@ -113,8 +113,7 @@ router.get('/userpage',function(req,res,next){
                     .fetchAll()
                     .then(function(following){
                         var overlords = following;
-                        console.log(twits.models[0].attributes);
-                        res.render('userpage', {twits: twits.models, minions: minions.models, overlords: overlords});
+                        res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions.models, overlords: overlords.models});
                     })
                 })
            })  
