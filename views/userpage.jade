@@ -10,7 +10,7 @@ block content
                 .minions Minions
                     ul
                         each mKey in minions
-                            li= mKey.attributes.user_id_minion
+                            li= mKey.relations.userNames.attributes.user_name
                 .overlords Overlords
                     ul
                         each oKey in overlords

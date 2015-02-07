@@ -19,7 +19,10 @@ var Twits = bookshelf.Model.extend({
     }
 })
 var Connections = bookshelf.Model.extend({
-    tableName: 'connections'
+    tableName: 'connections',
+    userNames: function(){
+        return this.belongsTo(Users);
+    }
 })
 
 
@@ -105,18 +108,22 @@ router.get('/userpage',function(req,res,next){
            .query('where', 'user_id', '=', userId)
            .fetchAll({withRelated: ['userNames']})
            .then(function(twitContent){
-                console.log(twitContent.models[0])
                 // twitContent.models[0].relations.userNames.attributes.user_name
                 var twits = twitContent;
                 new Connections()
                 .query('where', 'user_id_overlord', '=', userId)
-                .fetchAll()
+                .fetchAll({withRelated: ['userNames']})
                 .then(function(followers){
                     var minions = followers;
                     new Connections({user_id_minion: userId})
                     .query('where', 'user_id_minion', '=', userId)
-                    .fetchAll()
+                    .fetchAll({withRelated: ['userNames']})
                     .then(function(following){
+                        console.log(following.models[0].relations);
+                        // for (var i = 0; i < following.models.length; i++) {
+                        //     console.log(following.models[i].relations['UserNames'].attributes.user_name)
+                        // };
+                        
                         var overlords = following;
                         res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions.models, overlords: overlords.models});
                     })
