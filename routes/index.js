@@ -57,7 +57,7 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next){
-    
+    var minions = [];
     //bookshelf command to check database for username
     
     var usernameValid = function () {
@@ -69,6 +69,8 @@ router.post('/login', function(req, res, next){
                 if(model.attributes.password === req.body.password) {
                     res.cookie('user_name',req.body.user_name);  
                     res.cookie('password',req.body.password);
+                    res.cookie('id', model.attributes.id);
+
                     res.redirect('/userpage'); 
                 } else {
                     console.log('your password does not match').done();
@@ -79,16 +81,9 @@ router.post('/login', function(req, res, next){
             }               
         });
     }
-    var userId = 1;
 
-   
-   
-    minionFinder();
-    usernameValid();
- 
-    //bookshelf command to check database for password
-    //if match, render homepage
-    //if not, throw error
+    usernameValid(); 
+
 });
 
 router.post('/signup',function(req,res,next){
@@ -105,49 +100,50 @@ router.post('/signup',function(req,res,next){
 
 router.get('/userpage',function(req,res,next){
 
-function overlordFinder(callback) {
+
+    
+    var newUserId = parseInt(req.cookies.id);
     knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_overlord')  
     .then(function(table){
         var overlords = [];
         for (var i = 0; i < table.length; i++) {
-            if(table[i].user_id_minion === userId){
+
+            if(table[i].user_id_minion === newUserId){
                 overlords.push(table[i].user_name);
             }
         }
-        callback;
-    }) 
-}
-function minionFinder(callback) {
-    knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_minion')  
-    .then(function(table){
-        var minions = [];
-        for (var i = 0; i < table.length; i++) {
-            if(table[i].user_id_overlord === userId){
-                minions.push(table[i].user_name);
+        knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_minion')  
+        .then(function(thing){
+            var minions = [];
+            for (var i = 0; i < thing.length; i++) {
+                if(table[i].user_id_overlord === newUserId){
+                    minions.push(table[i].user_name);
+                }
             }
-        }
-        callback;
-    }) 
-} 
+            
+             new Users({user_name: req.cookies.user_name})
+                .fetch()
+                .then(function(model){
+                   var userId = model.attributes.id;
 
-
-    new Users({user_name: req.cookies.user_name})
-        .fetch()
-        .then(function(model){
-           var userId = model.attributes.id;
-           new Twits()
-           .query('where', 'user_id', '=', userId)
-           .fetchAll({withRelated: ['userNames']})
-           .then(function(twitContent){
-                // twitContent.models[0].relations.userNames.attributes.user_name
-                var twits = twitContent;
-                overlordFinder(
-                    minionfinder(
+                   new Twits()
+                   .query('where', 'user_id', '=', userId)
+                   .fetchAll({withRelated: ['userNames']})
+                   .then(function(twitContent){
+                        
+                        
+                        // twitContent.models[0].relations.userNames.attributes.user_name
+                        var twits = twitContent;
                         res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions, overlords: overlords})
-                    )
-                )     
-           })  
-        })
+                    
+                    }) 
+                     
+                })
+                 
+            })  
+             
+        }) 
+        
 });
 
 module.exports = router;

@@ -9,12 +9,11 @@ block content
             .people
                 .minions Minions
                     ul
-                        each mKey in minions
-                            li= mKey.relations.userNames.attributes.user_name
+                        each index in minions
+                            li= minions[i]
                 .overlords Overlords
                     ul
-                        each oKey in overlords
-                            li= oKey.attributes.user_id_overlord
+                        li= overlords
             .feed
                 ul
                     each tKey in twits
