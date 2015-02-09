@@ -1,3 +1,7 @@
+//redis setup
+// var redis = require("redis"),
+// client = redis.createClient();
+
 var Promise = require('bluebird');
 
 var express = require('express');
@@ -24,6 +28,7 @@ var Connections = bookshelf.Model.extend({
         return this.belongsTo(Users);
     }
 })
+
 
 
 /* GET home page. */
@@ -113,9 +118,9 @@ router.get('/userpage',function(req,res,next){
             }
         }
         knex.select('*').from('connections').join('users', 'users.id', 'connections.user_id_minion')  
-        .then(function(thing){
+        .then(function(table){
             var minions = [];
-            for (var i = 0; i < thing.length; i++) {
+            for (var i = 0; i < table.length; i++) {
                 if(table[i].user_id_overlord === newUserId){
                     minions.push(table[i].user_name);
                 }
@@ -134,6 +139,7 @@ router.get('/userpage',function(req,res,next){
                         
                         // twitContent.models[0].relations.userNames.attributes.user_name
                         var twits = twitContent;
+                        console.log(minions);
                         res.render('userpage', {username: req.cookies.user_name, twits: twits.models, minions: minions, overlords: overlords})
                     
                     }) 
