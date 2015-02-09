@@ -17,14 +17,28 @@ li {
     float:left;
 }
 
+.name {
+    font-weight:bold;
+    float:left;
+    margin: 10px 0;
+    padding:18px;
+}
+
 .entertwit {
-    width:50%;
     border: 1px solid green;
+    float:right;
+    margin:36px 0;
+}
+
+#input {
+    width:400px;
+    height:40px;
 }
 
 .activity {
     width:100%;
     border:1px solid blue;
+    float:left;
 
 }
 
@@ -35,17 +49,9 @@ li {
 }
 
 .minions,.overlords {
-    width:100%;
     border:1px solid orange;
     margin: 10px;
-
 }
-
-.overlords {
-/*    width:20%;
-    border:1px solid yellow;
-
-*/}
 
 .feed {
     width: 70%;
