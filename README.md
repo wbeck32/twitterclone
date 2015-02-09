@@ -5,7 +5,7 @@ Gonna use a hambone.
 
 Bugs, for future reference:
 
-1. Minions are not displaying on user page.
+~~1. Minions are not displaying on user page.~~
 2. Logout button
 3. Display login msgs/errors on page.
 4. Add overlord's tweets to page.
